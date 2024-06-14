@@ -1,58 +1,181 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<style>
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #4c0ae6;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
 
-    <title>Chat Room</title>
-  </head>
-  <body>
-    <h2>Chat Room</h2>
-    <textarea id="chat-text" cols="35" rows="7"></textarea><br>
-    <input id="input" type="text" size="35"><br>
-    <input id="submit" type="button" value="Send">
+#message-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 5px;
+  height: 40px;  /* Initial height */
+  min-height: 30px;  /* Set minimum height */
+  overflow: hidden;  /* Remove scrollbar */
+}
 
-    {{room_name|json_script:"room-name"}}
-    {{request.user.username|json_script:"user_username"}}
-      
-    <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
-        const user_username = JSON.parse(document.getElementById('user_username').textContent);
+#send-message-button {
+  background-color: #4752f7;
+  color: #ffff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-        document.querySelector("#submit").onclick = function(e){
-          const messageInputDOM = document.querySelector('#input');
-          const message = messageInputDOM.value;
-           chatSocket.send(JSON.stringify({
-            'message': message,
-            'username':user_username,
-          }))
-          messageInputDOM.value="";
-        }
+#send-message-button:hover {
+  background-color: #444;
+}
 
-        const chatSocket = new WebSocket (
-            'ws://'+ window.location.host +'/ws/chat/'+roomName+'/'
-        );
+body {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.container {
+  border: 2px solid #eff6ff;
+  background-color: #898ad1;
+  box-shadow: rgb(0 0 0 / 15%) 0px 3px 3px 2px;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.darker {
+  border-color: #a8a4a4;
+  background-color: #be1313;
+}
+
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.container img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+.container img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+
+.time-right {
+  float: right;
+  color: #fcf7f7;
+}
+
+.time-left {
+  float: left;
+  color: #251f1f;
+}
+#chat-container {
+    /* Existing styles... */
+    overflow-y: auto;
+    height: 400px;  /* Adjust height as needed */
+}
+</style>
+</head>
+<body>
+  <script>
+    window.onload = function() {
+        var chatContainer = document.getElementById("chat-container");  // Replace with your container element ID
+        if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;  // Scroll to bottom
+        } 
+        window.scrollTo(0, document.documentElement.scrollHeight);
+    };
+  </script>
+
+<h2>Chat Room</h2>
+<div id="chat-container">
+  {% for message in messages %}
+    {% if message.sender == request.user %}
+      <div class="container darker">
+        <img src="https://res.cloudinary.com/dqnwkkmzz/image/upload/v1/media/post-pic/default_dp.png" alt="Avatar" class="right" style="width:100%;">
+        <p>{{message.sender}}</p>
+        <p>{{message.content}}</p>
+        <span class="time-left">11:01</span>
+      </div>
+    {%else %}
+      <div class="container">
+        <img src="https://res.cloudinary.com/dqnwkkmzz/image/upload/v1/media/post-pic/default_dp.png" alt="Avatar" style="width:100%;">
+        <p>{{message.sender}}</p>
+        <p>{{message.content}}</p>
+        <span class="time-right">11:00</span>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+</div> 
+<div class="chat-input-container">
+  <textarea id="message-input" placeholder="Type your message..." rows="1"></textarea>
+  <button id="send-message-button">Send</button>
+</div>
+{{room_name|json_script:"room-name"}}
+{{request.user.username|json_script:"user_username"}}
+
+<script>
+  const roomName = JSON.parse(document.getElementById('room-name').textContent);
+  const user_username = JSON.parse(document.getElementById('user_username').textContent);
+
+  document.querySelector("#send-message-button").onclick = function(e){
+    const messageInputDOM = document.querySelector('#message-input');
+    const message = messageInputDOM.value;
+     chatSocket.send(JSON.stringify({
+      'message': message,
+      'username':user_username,
+    }))
+    messageInputDOM.value="";
+  }
+
+  const chatSocket = new WebSocket (
+      'ws://'+ window.location.host +'/ws/chat/'+roomName+'/'
+  );
+  
+  chatSocket.onmessage = function(e){
+      const data = JSON.parse(e.data);
+      console.log(data);
+
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('container');
+      new_message_string= `<img src="https://res.cloudinary.com/dqnwkkmzz/image/upload/v1/media/post-pic/default_dp.png" alt="Avatar" style="width:100%;">
+        <p>`+data.username+`</p>
+        <p>`+data.message+`</p>
+        <span class="time-right">11:00</span>`;
+      if (data.username == user_username){
+        messageElement.classList.add('darker');
+        new_message_string= `<img src="https://res.cloudinary.com/dqnwkkmzz/image/upload/v1/media/post-pic/default_dp.png" alt="Avatar" class="right" style="width:100%;">
+        <p>`+data.username+`</p>
+        <p>`+data.message+`</p>
+        <span class="time-right">11:00</span>`; 
         
-        chatSocket.onmessage = function(e){
-            const data = JSON.parse(e.data);
-            console.log(data);
-            document.querySelector('#chat-text').value +=(data.username+' : '+data.message + '\n')
-        };
-    </script>
+      }
 
-    <!-- Optional JavaScript; choose one of the two! -->
+      
+      messageElement.innerHTML= new_message_string;
+      const chatContainer = document.querySelector('#chat-container');
+      chatContainer.appendChild(messageElement);
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    -->
-  </body>
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+  };
+</script>
+</body>
 </html>
