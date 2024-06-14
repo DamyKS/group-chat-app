@@ -147,7 +147,7 @@ body {
   }
 
   const chatSocket = new WebSocket (
-      'wss://'+ window.location.host +'/wss/chat/'+roomName+'/'
+      'wss://'+ window.location.host +'/ws/chat/'+roomName+'/'
   );
   
   chatSocket.onmessage = function(e){
