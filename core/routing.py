@@ -7,7 +7,7 @@ from django.core.asgi import get_asgi_application
 django_asgi_application = get_asgi_application()
 
 application = ProtocolTypeRouter({
-    "https": django_asgi_application,
+    "http": django_asgi_application,
     'websocket': AuthMiddlewareStack(
         URLRouter(
             chat.routing.websocket_urlpatterns
