@@ -121,9 +121,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ASGI_APPLICATION = "core.routing.application"
-
 """
-
 CHANNEL_LAYERS = {
     "default":{
         "BACKEND": "channels.layers.InMemoryChannelLayer"
@@ -131,7 +129,6 @@ CHANNEL_LAYERS = {
 }
 
 """
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer", 
