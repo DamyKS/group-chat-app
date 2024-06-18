@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
 <style>
 .chat-input-container {
   display: flex;
@@ -147,7 +147,7 @@ body {
   }
   console.log('ws://'+ window.location.host+':443/ws/chat/'+roomName+'/')
   const chatSocket = new WebSocket (
-      'ws://'+ window.location.host+':443/ws/chat/'+roomName+'/'
+      'wss://group-chat-app-5vwo.onrender.com'+':443/ws/chat/'+roomName+'/'
   );
 
   
