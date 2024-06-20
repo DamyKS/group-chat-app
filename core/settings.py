@@ -121,6 +121,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ASGI_APPLICATION = "core.routing.application"
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#CSRF_TRUSTED_ORIGINS = ['https://group-chat-app-7qkg.onrender.com']
 """
 CHANNEL_LAYERS = {
     "default":{
