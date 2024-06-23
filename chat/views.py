@@ -1,8 +1,15 @@
 from django.shortcuts import render
 from . models import Chat, Message
-def index(request):
-    return render(request, 'index.html', {})
+from django.contrib.auth.decorators import login_required
 
+
+def index(request):
+    chats = Chat.objects.all()
+    context= {
+        'chats':chats,
+    }
+    return render(request, 'index.html', context)
+@login_required
 def room(request,room_name):
     try:
         chat = Chat.objects.get(chat_name=room_name)

@@ -31,8 +31,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #my apps
     'chat',
+    'accounts',
     #installed apps
     'channels',
+    'django_bootstrap5',
 
 ]
 
@@ -141,3 +143,7 @@ CHANNEL_LAYERS = {
     },
 }
 #"""
+
+LOGIN_REDIRECT_URL= 'chat:index'
+LOGOUT_REDIRECT_URL = 'chat:index'
+LOGIN_URL = 'accounts:login'
