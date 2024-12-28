@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Group Chats</title>
-<<<<<<< HEAD
   <style>
     :root {
       --primary-color: #00a884;
@@ -187,33 +186,3 @@
   </main>
 </body>
 </html>
-=======
-</head>
-<body>
-  {% if user.is_authenticated %}
-    <a href="{% url 'accounts:register' %}">Hello, {{ user.username }}.</a>
-    <form action="{% url 'accounts:logout' %}" method='post'>
-      {% csrf_token %}
-      <button name='submit'> Log out</button>
-    </form>
-  {% else %}
-    <a  href="{% url 'accounts:register' %}">Register</a>
-    <a  href="{% url 'accounts:login' %}">Log in</a>
-  {% endif %}
-
-  <h1>Group Chats</h1>
-  <p>
-    Discover exciting group chats and connect with like-minded people!<br>
-    Browse a variety of topics and interests below. <br>
-    Click on any chat that sparks your curiosity to join the fun and make new friends along the way.
-  </p>
-  {% for chat in chats %}
-    <a href="{% url 'chat:room' chat.chat_name %}"><h3>{{ chat.chat_name }}</h3></a> 
-  {% empty %}
-    <h4> There are currently no available groups</h4>
-  {% endfor %}
-
-
-</body>
-</html>
->>>>>>> 863c3ae30dc322ab542405ec8a6832db8e77e4b4
