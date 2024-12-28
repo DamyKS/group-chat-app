@@ -1,0 +1,128 @@
+{% load django_bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    :root {
+      --primary-color: #00a884;
+      --bg-dark: #111b21;
+      --card-bg: #202c33;
+      --text-primary: #e9edef;
+      --text-secondary: #8696a0;
+      --input-bg: #2a3942;
+      --error-color: #ef4444;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-container {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 400px;
+      margin: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    h2 {
+      color: var(--primary-color);
+      font-size: 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Bootstrap form overrides */
+    .form-control {
+      background-color: var(--input-bg) !important;
+      border: 1px solid var(--card-bg) !important;
+      color: var(--text-primary) !important;
+      border-radius: 8px !important;
+      padding: 12px !important;
+      transition: border-color 0.2s !important;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color) !important;
+      box-shadow: none !important;
+    }
+
+    .form-control::placeholder {
+      color: var(--text-secondary) !important;
+    }
+
+    .form-label {
+      color: var(--text-primary) !important;
+      font-weight: 500 !important;
+      margin-bottom: 8px !important;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color) !important;
+      border: none !important;
+      padding: 12px 24px !important;
+      font-weight: 500 !important;
+      border-radius: 8px !important;
+      width: 100% !important;
+      margin-top: 16px !important;
+      transition: background-color 0.2s !important;
+    }
+
+    .btn-primary:hover {
+      background-color: #02917a !important;
+    }
+
+    .alert {
+      background-color: var(--input-bg) !important;
+      border: 1px solid var(--error-color) !important;
+      color: var(--text-primary) !important;
+      border-radius: 8px !important;
+    }
+
+    .form-text {
+      color: var(--text-secondary) !important;
+    }
+
+    .invalid-feedback {
+      color: var(--error-color) !important;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        margin: 16px;
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    {% block page_header %}
+      <h2>Log in to your account</h2>
+    {% endblock page_header %}
+
+    {% block content %}
+      <form action="{% url 'accounts:login' %}" method='post'>
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% bootstrap_button button_type="submit" content="Log in" button_class="btn-primary" %}
+      </form>
+    {% endblock content %}
+  </div>
+
+  {% bootstrap_javascript %}
+</body>
+</html>
